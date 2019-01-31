@@ -44,7 +44,7 @@ $app->group('/api', function () use ($app) {
 function getConnection() {
     $dbhost="localhost";
     $dbuser="root";
-    $dbpass="";
+    $dbpass="ken2017";
     $dbname="altruistic";
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
