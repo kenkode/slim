@@ -42,7 +42,7 @@ $app->group('/api', function () use ($app) {
 	$app->post('/boardings', 'insertBoardings');
 });
 function getConnection() {
-    $dbhost="localhost";
+    $dbhost="127.0.0.1";
     $dbuser="root";
     $dbpass="ken2017";
     $dbname="altruistic";
