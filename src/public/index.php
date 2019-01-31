@@ -9,7 +9,7 @@ $config['addContentLengthHeader'] = false;
 
 $config['db']['host']   = 'localhost';
 $config['db']['user']   = 'root';
-$config['db']['pass']   = '';
+$config['db']['pass']   = 'ken2017';
 $config['db']['dbname'] = 'altruistic';
 
 $corsOptions = array(
