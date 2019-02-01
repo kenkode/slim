@@ -23,6 +23,7 @@ $corsOptions = array(
 $cors = new \CorsSlim\CorsSlim($corsOptions);
 
 $app = new \Slim\App(['settings' => $config]);
+$app->add($cors);
 $container = $app->getContainer();
 $container['logger'] = function($c) {
     $logger = new \Monolog\Logger('my_logger');
