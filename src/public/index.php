@@ -145,7 +145,7 @@ function insertBoardings($request) {
 			$user->execute();
 			
 			$db = null;
-			echo json_encode("User has boarded!");
+			echo json_encode($boarding);
 		}
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
