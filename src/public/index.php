@@ -54,10 +54,10 @@ function getConnection() {
     return $dbh;
 }
 function getAvailableBuses($request) {
-	$cordinates = json_decode($request->getBody());
+	//$cordinates = json_decode($request->getBody());
 	
-	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $cordinates->lat . " ) ) * cos( radians( latitude ) ) * 
-			cos( radians( longitude ) - radians( " . $cordinates->lng . ") ) + sin( radians( " . $cordinates->lat . " ) ) * 
+	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $request->lat . " ) ) * cos( radians( latitude ) ) * 
+			cos( radians( longitude ) - radians( " . $request->lng . ") ) + sin( radians( " . $request->lat . " ) ) * 
 			sin( radians( latitude ) ) ) ) AS distance FROM stations HAVING
 			distance < 0.05 ORDER BY distance LIMIT 1";
     try {
