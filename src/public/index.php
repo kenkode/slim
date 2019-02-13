@@ -56,8 +56,8 @@ function getConnection() {
 function getAvailableBuses($request) {
 	//$cordinates = json_decode($request->getBody());
 	
-	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $request->lat . " ) ) * cos( radians( latitude ) ) * 
-			cos( radians( longitude ) - radians( " . $request->lng . ") ) + sin( radians( " . $request->lat . " ) ) * 
+	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $_GET['lat'] . " ) ) * cos( radians( latitude ) ) * 
+			cos( radians( longitude ) - radians( " . $_GET['lng'] . ") ) + sin( radians( " . $_GET['lat'] . " ) ) * 
 			sin( radians( latitude ) ) ) ) AS distance FROM stations HAVING
 			distance < 0.05 ORDER BY distance LIMIT 1";
     try {
