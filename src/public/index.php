@@ -100,8 +100,8 @@ function postUsers($request) {
 			$stmt = $db->prepare($sql);
 			$stmt->bindParam("stationId", $station["id"]);
 			$stmt->execute();
-			$db = null;
 			echo $db->lastInsertId();
+			$db = null;
 		}
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
