@@ -101,7 +101,7 @@ function postUsers($request) {
 			$stmt->bindParam("stationId", $station["id"]);
 			$stmt->execute();
 			$db = null;
-			echo json_encode($db->lastInsertId());
+			echo $db->lastInsertId();
 		}
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
