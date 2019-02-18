@@ -79,12 +79,11 @@ function getAvailableBuses($request) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     } 
 }
-function postUsers($request) {
-    $user = json_decode($request->getBody());
-	return $user->lat;
+function postUsers($lat, $lng) {
+    //$user = json_decode($request->getBody());
 	
-	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $user->lat . " ) ) * cos( radians( latitude ) ) * 
-			cos( radians( longitude ) - radians( " . $user->lng . ") ) + sin( radians( " . $user->lat . " ) ) * 
+	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $lat . " ) ) * cos( radians( latitude ) ) * 
+			cos( radians( longitude ) - radians( " . $lng . ") ) + sin( radians( " . $lat . " ) ) * 
 			sin( radians( latitude ) ) ) ) AS distance FROM stations HAVING
 			distance < 10 ORDER BY distance LIMIT 1";
     try {
