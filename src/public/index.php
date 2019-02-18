@@ -79,8 +79,10 @@ function getAvailableBuses($request) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     } 
 }
-function postUsers($lat, $lng) {
+function postUsers($request) {
     //$user = json_decode($request->getBody());
+	$lat = $_POST['lat'];
+	$lng = $_POST['lng'];
 	
 	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $lat . " ) ) * cos( radians( latitude ) ) * 
 			cos( radians( longitude ) - radians( " . $lng . ") ) + sin( radians( " . $lat . " ) ) * 
