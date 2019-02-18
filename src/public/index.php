@@ -81,12 +81,11 @@ function getAvailableBuses($request) {
 }
 function postUsers($request) {
     $user = json_decode($request->getBody());
-	return $user->lat;
 	
 	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $user->lat . " ) ) * cos( radians( latitude ) ) * 
 			cos( radians( longitude ) - radians( " . $user->lng . ") ) + sin( radians( " . $user->lat . " ) ) * 
 			sin( radians( latitude ) ) ) ) AS distance FROM stations HAVING
-			distance < 0.05 ORDER BY distance LIMIT 1";
+			distance < 10 ORDER BY distance LIMIT 1";
     try {
 		$db = getConnection();
         $stmt = $db->query($stationSql);
