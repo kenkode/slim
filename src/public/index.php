@@ -81,6 +81,7 @@ function getAvailableBuses($request) {
 }
 function postUsers($request) {
     $user = json_decode($request->getBody());
+	return $user;
 	
 	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $user->lat . " ) ) * cos( radians( latitude ) ) * 
 			cos( radians( longitude ) - radians( " . $user->lng . ") ) + sin( radians( " . $user->lat . " ) ) * 
