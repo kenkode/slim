@@ -108,10 +108,13 @@ function postUsers($request) {
     }
 }
 function insertBoardings($request) {
-    $boarding = json_decode($request->getBody());
+    $userId = $_POST['userId'];
+	$lat = $_POST['lat'];
+	$lng = $_POST['lng'];
 	
-	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $boarding->lat . " ) ) * cos( radians( latitude ) ) * 
-			cos( radians( longitude ) - radians( " . $boarding->lng . ") ) + sin( radians( " . $boarding->lat . " ) ) * 
+	
+	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $lat . " ) ) * cos( radians( latitude ) ) * 
+			cos( radians( longitude ) - radians( " . $lng . ") ) + sin( radians( " . $lat . " ) ) * 
 			sin( radians( latitude ) ) ) ) AS distance FROM stations HAVING
 			distance < 0.001 ORDER BY distance LIMIT 1";
     try {
@@ -132,17 +135,19 @@ function insertBoardings($request) {
 			
 			$sql = "INSERT INTO boardings (user_id, bus_id, station_id, created_at) VALUES (:userId, :busId, :stationId, NOW())";
 			$stmt = $db->prepare($sql);
-			$stmt->bindParam("userId", $boarding->userId);
+			$stmt->bindParam("userId", $userId);
 			$stmt->bindParam("busId", $bus["id"]);
 			$stmt->bindParam("stationId", $station["id"]);
 			$stmt->execute();
-			$boarding->id = $db->lastInsertId();
+			$boarding = [];
+			$boarding['userId'] = $userId;
+			$boarding['busId'] = $db->lastInsertId();
 			
 			$status = 1;
 			$user = $db->prepare("UPDATE `users` SET status = :status, boarded_at = :boardedAt WHERE `id` = :userId");
 			$user->bindParam('status', $status);
 			$user->bindParam('boardedAt', $date);
-			$user->bindParam('userId', $boarding->userId);
+			$user->bindParam('userId', $userId);
 			$user->execute();
 			
 			$db = null;
