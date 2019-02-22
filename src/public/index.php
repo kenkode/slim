@@ -108,9 +108,10 @@ function postUsers($request) {
     }
 }
 function insertBoardings($request) {
-    $userId = $_POST['userId'];
-	$lat = $_POST['lat'];
-	$lng = $_POST['lng'];
+	$user = json_decode($request->getBody());
+    $userId = $user->userId;
+	$lat = $user->lat;
+	$lng = $user->lng;
 	
 	
 	$stationSql = "SELECT id, ( 6371 * acos( cos( radians( " . $lat . " ) ) * cos( radians( latitude ) ) * 
