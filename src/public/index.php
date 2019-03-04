@@ -68,7 +68,7 @@ $app->get('/stations', function ($request, $response) {
     } 
 
     $params = array('data' => $data,
-        'base_url' => "http://localhost/slim/src/public/index.php/station",
+        'base_url' => "http://209.97.137.219/slim/src/public/index.php/station",
         'title' => 'All Station Listing'
     );
    return $this->view->render($response, 'stations.twig', $params);
@@ -76,7 +76,7 @@ $app->get('/stations', function ($request, $response) {
 $app->group('/station', function () use ($app) {
 	$app->get('/add', function ($request, $response) {
 		$params = array(
-			'base_url' => "http://localhost/slim/src/public/index.php/station",
+			'base_url' => "http://209.97.137.219/slim/src/public/index.php/station",
 			'title' => 'All Station Listing'
 		);
 	    return $this->view->render($response, 'add_station.twig', $params);
@@ -104,7 +104,7 @@ $app->group('/station', function () use ($app) {
 			$db = null;
 
 			$params = array('data' => $data,
-				'base_url' => "http://localhost/slim/src/public/index.php/station",
+				'base_url' => "http://209.97.137.219/slim/src/public/index.php/station",
 				'title' => 'All Station Listing'
 			);
 			return $this->view->render($response, 'stations.twig', $params);
@@ -128,7 +128,7 @@ $app->group('/station', function () use ($app) {
 		} 
 
 		$params = array('data' => $data,
-			'base_url' => "http://localhost/slim/src/public/index.php/station",
+			'base_url' => "http://209.97.137.219/slim/src/public/index.php/station",
 			'title' => 'All Station Listing'
 		);
 	   return $this->view->render($response, 'edit_station.twig', $params);
@@ -158,7 +158,7 @@ $app->group('/station', function () use ($app) {
 			$db = null;
 
 			$params = array('data' => $data,
-				'base_url' => "http://localhost/slim/src/public/index.php/station",
+				'base_url' => "http://209.97.137.219/slim/src/public/index.php/station",
 				'title' => 'All Station Listing'
 			);
 			return $this->view->render($response, 'stations.twig', $params);
@@ -184,7 +184,7 @@ $app->group('/station', function () use ($app) {
 			$db = null;
 
 			$params = array('data' => $data,
-				'base_url' => "http://localhost/slim/src/public/index.php/station",
+				'base_url' => "http://209.97.137.219/slim/src/public/index.php/station",
 				'title' => 'All Station Listing'
 			);
 			return $this->view->render($response, 'stations.twig', $params);
@@ -301,7 +301,7 @@ function storeStation($request) {
 		$db = null;
 
 		$params = array('data' => $data,
-			'base_url' => "http://localhost/slim/src/public/index.php/station",
+			'base_url' => "http://209.97.137.219/slim/src/public/index.php/station",
 			'title' => 'All Station Listing'
 		);
 	    return $this->view->render($response, 'stations.twig', $params);
