@@ -39,10 +39,159 @@ $container['db'] = function ($c) {
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     return $pdo;
 };
+$container['view'] = function ($container) {
+   $view = new \Slim\Views\Twig(__DIR__ . '/resources/views', [
+       'cache' => false,
+   ]);
+   $view->addExtension(new \Slim\Views\TwigExtension(
+       $container->router,
+       $container->request->getUri()
+   ));
+   return $view;
+};
 $app->group('/api', function () use ($app) {
 	$app->get('/available-buses', 'getAvailableBuses');
 	$app->post('/users', 'postUsers');
 	$app->post('/boardings', 'insertBoardings');
+});
+$app->get('/stations', function ($request, $response) {
+	$data = [];
+	$stationSql = "SELECT * FROM stations";
+    try {
+		$db = getConnection();
+        $stmt = $db->query($stationSql);
+        $data = $stmt->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
+		
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    } 
+
+    $params = array('data' => $data,
+        'base_url' => "http://localhost/slim/src/public/index.php/station",
+        'title' => 'All Station Listing'
+    );
+   return $this->view->render($response, 'stations.twig', $params);
+});
+$app->group('/station', function () use ($app) {
+	$app->get('/add', function ($request, $response) {
+		$params = array(
+			'base_url' => "http://localhost/slim/src/public/index.php/station",
+			'title' => 'All Station Listing'
+		);
+	    return $this->view->render($response, 'add_station.twig', $params);
+	});
+	$app->post('/store', function($request, $response){
+		$lat  = $_POST['latitude'];
+		$lng  = $_POST['longitude'];
+		$name = $_POST['name'];
+		
+		try {
+			$db = getConnection();
+			$date = date('Y-m-d H:i:s');
+			$sql = "INSERT INTO stations (name, latitude, longitude) VALUES (:name, :lat, :lng)";
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam("name", $name);
+			$stmt->bindParam("lat", $lat);
+			$stmt->bindParam("lng", $lng);
+			$stmt->execute();
+			
+			$data = [];
+			$stationSql = "SELECT * FROM stations";
+			$db = getConnection();
+			$stmt = $db->query($stationSql);
+			$data = $stmt->fetchAll(PDO::FETCH_OBJ);
+			$db = null;
+
+			$params = array('data' => $data,
+				'base_url' => "http://localhost/slim/src/public/index.php/station",
+				'title' => 'All Station Listing'
+			);
+			return $this->view->render($response, 'stations.twig', $params);
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
+	});
+	$app->get('/{id}/edit', function ($request, $response) {
+		$route = $request->getAttribute('route');
+		$id = $route->getArgument('id');
+		
+		$stationSql = "SELECT * FROM stations WHERE id=".$id;
+		try {
+			$db = getConnection();
+			$stmt = $db->query($stationSql);
+			$data = $stmt->fetch();
+			$db = null;
+			
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		} 
+
+		$params = array('data' => $data,
+			'base_url' => "http://localhost/slim/src/public/index.php/station",
+			'title' => 'All Station Listing'
+		);
+	   return $this->view->render($response, 'edit_station.twig', $params);
+	});
+	$app->post('/update/{id}', function ($request, $response) {
+		$route = $request->getAttribute('route');
+		$id = $route->getArgument('id');
+		$lat = $_POST['latitude'];
+		$lng = $_POST['longitude'];
+		$name = $_POST['name'];
+		
+		try {
+			$db = getConnection();
+			$sql = "UPDATE `stations` SET name = :name, latitude = :lat, longitude = :lng WHERE `id` = :id";
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam("name", $name);
+			$stmt->bindParam("lat", $lat);
+			$stmt->bindParam("lng", $lng);
+			$stmt->bindParam("id", $id);
+			$stmt->execute();
+			
+			$data = [];
+			$stationSql = "SELECT * FROM stations";
+			$db = getConnection();
+			$stmt = $db->query($stationSql);
+			$data = $stmt->fetchAll(PDO::FETCH_OBJ);
+			$db = null;
+
+			$params = array('data' => $data,
+				'base_url' => "http://localhost/slim/src/public/index.php/station",
+				'title' => 'All Station Listing'
+			);
+			return $this->view->render($response, 'stations.twig', $params);
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
+	});
+	$app->post('/delete/{id}', function ($request, $response) {
+		try {
+			$route = $request->getAttribute('route');
+			$id = $route->getArgument('id');
+			$db = getConnection();
+			$sql = "DELETE from `stations` WHERE `id` = :id";
+			$stmt = $db->prepare($sql);
+			$stmt->bindParam("id", $id);
+			$stmt->execute();
+			
+			$data = [];
+			$stationSql = "SELECT * FROM stations";
+			$db = getConnection();
+			$stmt = $db->query($stationSql);
+			$data = $stmt->fetchAll(PDO::FETCH_OBJ);
+			$db = null;
+
+			$params = array('data' => $data,
+				'base_url' => "http://localhost/slim/src/public/index.php/station",
+				'title' => 'All Station Listing'
+			);
+			return $this->view->render($response, 'stations.twig', $params);
+		} catch(PDOException $e) {
+			echo '{"error":{"text":'. $e->getMessage() .'}}';
+		}
+	});
 });
 function getConnection() {
     $dbhost="127.0.0.1";
@@ -103,6 +252,59 @@ function postUsers($request) {
 			echo $db->lastInsertId();
 			$db = null;
 		}
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+function addStation($request) {
+    //$user = json_decode($request->getBody());
+	$lat = $_POST['lat'];
+	$lng = $_POST['lng'];
+	$name = $_POST['name'];
+	
+    try {
+		$db = getConnection();
+		$date = date('Y-m-d H:i:s');
+		$sql = "INSERT INTO stations (name, latitude, longitude) VALUES (:name, :lat, :lng)";
+		$stmt = $db->prepare($sql);
+		$stmt->bindParam("name", $name);
+		$stmt->bindParam("lat", $lat);
+		$stmt->bindParam("lng", $lng);
+		$stmt->execute();
+		echo $db->lastInsertId();
+		$db = null;
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+function storeStation($request) {
+    //$user = json_decode($request->getBody());
+	$lat = $_POST['latitude'];
+	$lng = $_POST['longitude'];
+	$name = $_POST['name'];
+	
+    try {
+		$db = getConnection();
+		$date = date('Y-m-d H:i:s');
+		$sql = "INSERT INTO stations (name, latitude, longitude) VALUES (:name, :lat, :lng)";
+		$stmt = $db->prepare($sql);
+		$stmt->bindParam("name", $name);
+		$stmt->bindParam("lat", $lat);
+		$stmt->bindParam("lng", $lng);
+		$stmt->execute();
+		
+		$data = [];
+		$stationSql = "SELECT * FROM stations";
+		$db = getConnection();
+		$stmt = $db->query($stationSql);
+		$data = $stmt->fetchAll(PDO::FETCH_OBJ);
+		$db = null;
+
+		$params = array('data' => $data,
+			'base_url' => "http://localhost/slim/src/public/index.php/station",
+			'title' => 'All Station Listing'
+		);
+	    return $this->view->render($response, 'stations.twig', $params);
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>{{title}}</title>
+
+        <!-- Bootstrap core CSS -->
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+        <!-- Just for debugging purposes. Don't actually copy this line! -->
+        <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="container">
+            {% block content %} 
+				<h1>All Stations Listing</h1>
+				<div><a href="{{base_url}}/add" class="btn btn-info">Add New Stations</a></div>
+				<div class="bs-example">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Latitude</th>
+								<th>Longitude</th>
+								<th>Created At</th>
+								<th colspan="2" align="center">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% if data %}
+							{% for row in data %}
+							<tr>
+								<td>{{ row.id }}</td>
+								<td>{{ row.name }}</td>
+								<td>{{ row.latitude }}</td>
+								<td>{{ row.longitude }}</td>
+								<td>{{ row.created_at }}</td>
+								<td><a href="{{base_url}}/{{row.id}}/edit" class="btn btn-info">Edit</a></td>
+								<td>
+									<form action="{{base_url}}/delete/{{row.id}}" method="POST"> 
+										<input class="btn btn-danger" type = "submit" value ="Delete">
+										<input type="hidden" id="delete" name="delete" value="1">
+										<input type="hidden" id="station_id" name="station_id" value="{{row.id}}">
+									</form>
+								</td>
+							</tr>
+
+							{% endfor %} 
+							{% else %}
+							<p>No records found</p>
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			{% endblock %}
+        </div> <!-- /container -->
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+    </body>
+</html>
